@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"syscall"
 )
 
 func main() {
@@ -23,7 +24,10 @@ func run() {
 	cmd.Stdout = os.Stdout // Redirect stdout to the terminal
 	cmd.Stderr = os.Stderr // Redirect stderr to the terminal
 	cmd.Stdin = os.Stdin   // Redirect stdin from the terminal
-
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		Setsid:  true, // Create a new session
+		Setpgid: true, // Create a new process group
+	}
 	cmd.Run()
 
 }
