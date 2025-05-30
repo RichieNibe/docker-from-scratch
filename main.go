@@ -29,7 +29,6 @@ func run() {
 		Setpgid: true, // Create a new process group
 	}
 	cmd.Run()
-
 }
 
 func must(err error) {
