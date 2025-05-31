@@ -11,7 +11,6 @@ func main() {
 	switch os.Args[1] {
 	case "run":
 		run()
-
 	default:
 		panic("bad command")
 	}
@@ -21,14 +20,17 @@ func run() {
 	fmt.Printf("Running %v\n", os.Args[2:])
 
 	cmd := exec.Command(os.Args[2], os.Args[3:]...)
-	cmd.Stdout = os.Stdout // Redirect stdout to the terminal
-	cmd.Stderr = os.Stderr // Redirect stderr to the terminal
-	cmd.Stdin = os.Stdin   // Redirect stdin from the terminal
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
 	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Setsid:  true, // Create a new session
-		Setpgid: true, // Create a new process group
+		CreationFlags: syscall.CREATE_NEW_PROCESS_GROUP,
 	}
-	cmd.Run()
+
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("Error running command: %v\n", err)
+		os.Exit(1)
+	}
 }
 
 func must(err error) {
